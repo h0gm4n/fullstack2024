@@ -7,6 +7,7 @@ const App = () => {
   const [bad, setBad] = useState(0)
   const feedback = 'give feedback'
   const statistics = 'statistics'
+  const all = good + neutral + bad
 
   const Header = (props) => {
     return (
@@ -32,6 +33,10 @@ const App = () => {
       <div>good {good}</div>
       <div>neutral {neutral}</div>
       <div>bad {bad}</div>
+      <div>all {all}</div>
+      <div>average {((1 * good) + (0 * neutral) + (-1 * bad)) / all}</div>
+      <div>positive {good / (good + neutral + bad)} %</div>
+
     </div>
   )
 }
