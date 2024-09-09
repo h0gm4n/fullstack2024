@@ -1,63 +1,37 @@
+import { useState } from 'react'
+
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
-  }
+  // tallenna napit omaan tilaansa
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+  const feedback = 'give feedback'
+  const statistics = 'statistics'
 
   const Header = (props) => {
     return (
       <div>
-        <h1>
-          {props.course}
-        </h1>
-      </div>
-    )
-  }
-
-  const Content = () => {
-    return (
-      <div>
-        <Part part={course.parts[0].name} exercise={course.parts[0].exercises} />
-        <Part part={course.parts[1].name} exercise={course.parts[1].exercises} />
-        <Part part={course.parts[2].name} exercise={course.parts[2].exercises} />
-      </div>
-    )
-  }
-
-  const Part = (props) => {
-    return (
-      <div>
-        {props.part} {props.exercise}
-      </div>
-    )
-  }
-
-  const Total = (props) => {
-    return (
-      <div>
-        {props.exercises}
+        <h2>{props.header}</h2>
       </div>
     )
   }
 
   return (
     <div>
-      <Header course={course.name} />
-      <Content></Content>
-      <Total exercises={course.parts[0].exercises + course.parts[1].exercises + course.parts[2].exercises} />
+      <Header header={feedback} />
+      <button onClick={() => setGood(good + 1)}>
+        good
+      </button>
+      <button onClick={() => setNeutral(neutral + 1)}>
+        neutral
+      </button>
+      <button onClick={() => setBad(bad + 1)}>
+        bad
+      </button>
+      <Header header={statistics} />
+      <div>good {good}</div>
+      <div>neutral {neutral}</div>
+      <div>bad {bad}</div>
     </div>
   )
 }
