@@ -4,12 +4,12 @@ const Statistics = (props) => {
   if (props.all > 0) {
     return (
       <div>
-        <div>good {props.good}</div>
-        <div>neutral {props.neutral}</div>
-        <div>bad {props.bad}</div>
-        <div>all {props.all}</div>
-        <div>average {props.average}</div>
-        <div>positive {props.positive} %</div>
+        <StatisticLine text="good" value={props.good}></StatisticLine>
+        <StatisticLine text="neutral" value={props.neutral}></StatisticLine>
+        <StatisticLine text="bad" value={props.bad}></StatisticLine>
+        <StatisticLine text="all" value={props.all}></StatisticLine>
+        <StatisticLine text="average" value={props.average}></StatisticLine>
+        <StatisticLine text="positive" value={props.positive} text2="%"></StatisticLine>
       </div>
     )
   } else {
@@ -21,6 +21,20 @@ const Statistics = (props) => {
   }
 }
 
+const Button = ({ handleClick, text }) => {
+  return (
+    <button onClick={handleClick}>
+      {text}
+    </button>
+  )
+}
+
+const StatisticLine = (props) => {
+  return (
+    <div>{props.text} {props.value} {props.text2}</div>
+  )
+}
+
 const App = () => {
   // tallenna napit omaan tilaansa
   const [good, setGood] = useState(0)
@@ -30,7 +44,7 @@ const App = () => {
   const statistics = 'statistics'
   const all = good + neutral + bad
   const average = ((1 * good) + (0 * neutral) + (-1 * bad)) / all
-  const positive = good / (good + neutral + bad)
+  const positive = (good / (good + neutral + bad)) * 100
 
   const Header = (props) => {
     return (
@@ -40,18 +54,24 @@ const App = () => {
     )
   }
 
+  const handleGoodClick = () => {
+    setGood(good + 1)
+  }
+
+  const handleNeutralClick = () => {
+    setNeutral(neutral + 1)
+  }
+
+  const handleBadClick = () => {
+    setBad(bad + 1)
+  }
+
   return (
     <div>
       <Header header={feedback} />
-      <button onClick={() => setGood(good + 1)}>
-        good
-      </button>
-      <button onClick={() => setNeutral(neutral + 1)}>
-        neutral
-      </button>
-      <button onClick={() => setBad(bad + 1)}>
-        bad
-      </button>
+      <Button handleClick={handleGoodClick} text={"good"}></Button>
+      <Button handleClick={handleNeutralClick} text={"neutral"}>neutral</Button>
+      <Button handleClick={handleBadClick} text={"bad"}>bad</Button>
       <Header header={statistics} />
       <Statistics good={good} neutral={neutral} bad={bad} all={all} average={average} positive={positive} />
 
