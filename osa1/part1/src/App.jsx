@@ -145,6 +145,7 @@ const App = () => {
       <Header header={statistics} />
       <Statistics good={good} neutral={neutral} bad={bad} all={all} average={average} positive={positive} />
       <div>
+        <h2>Anecdote of the day</h2>
         <p>
           {anecdotes[selected]}
         </p>
@@ -154,6 +155,11 @@ const App = () => {
       </div>
       <Button handleClick={handleVote} text={"vote"}></Button>
       <Button handleClick={handleAnecdote} text={"next anecdote"}></Button>
+      <div>
+        <h2>Anecdote with most votes</h2>
+        <p>{anecdotes[points.indexOf(Math.max(...points))]}</p>
+        <p>has {Math.max(...points)} points</p>
+      </div>
     </div>
   )
 }
