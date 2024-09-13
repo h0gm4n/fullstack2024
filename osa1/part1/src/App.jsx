@@ -4,12 +4,56 @@ const Statistics = (props) => {
   if (props.all > 0) {
     return (
       <div>
-        <StatisticLine text="good" value={props.good}></StatisticLine>
-        <StatisticLine text="neutral" value={props.neutral}></StatisticLine>
-        <StatisticLine text="bad" value={props.bad}></StatisticLine>
-        <StatisticLine text="all" value={props.all}></StatisticLine>
-        <StatisticLine text="average" value={props.average}></StatisticLine>
-        <StatisticLine text="positive" value={props.positive} text2="%"></StatisticLine>
+        <table>
+          <tr>
+            <td>
+              <StatisticLine text="good"></StatisticLine>
+            </td>
+            <td>
+              <StatisticLine value={props.good}></StatisticLine>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="neutral"></StatisticLine>
+            </td>
+            <td>
+              <StatisticLine value={props.neutral}></StatisticLine>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="bad"></StatisticLine>
+            </td>
+            <td>
+              <StatisticLine value={props.bad}></StatisticLine>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="all"></StatisticLine>
+            </td>
+            <td>
+              <StatisticLine value={props.all}></StatisticLine>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="average"></StatisticLine>
+            </td>
+            <td>
+              <StatisticLine value={props.average}></StatisticLine>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="positive"></StatisticLine>
+            </td>
+            <td>
+              <StatisticLine value={props.positive}></StatisticLine>
+            </td>
+          </tr>
+        </table>
       </div>
     )
   } else {
@@ -74,7 +118,6 @@ const App = () => {
       <Button handleClick={handleBadClick} text={"bad"}>bad</Button>
       <Header header={statistics} />
       <Statistics good={good} neutral={neutral} bad={bad} all={all} average={average} positive={positive} />
-
     </div>
   )
 }
