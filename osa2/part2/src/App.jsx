@@ -20,6 +20,7 @@ const App = () => {
     <div>
       <Header course={course.name}></Header>
       <Content parts={course.parts}></Content>
+      <Total sum={course.parts.map(part => part.exercises).reduce((sum, num) => sum + num)}></Total>
     </div>
 
   const course = {
@@ -28,7 +29,7 @@ const App = () => {
     parts: [
       {
         name: 'Fundamentals of React',
-        exercises: 10,
+        exercises: 13,
         id: 1
       },
       {
