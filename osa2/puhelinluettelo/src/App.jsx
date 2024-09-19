@@ -25,12 +25,23 @@ const AllPersons = (props) =>
   </div>
 
 const Notification = ({ message }) => {
+
   if (message === null) {
     return null
   }
-
   return (
     <div className="alertMessage">
+      {message}
+    </div>
+  )
+}
+
+const Error = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className="errorMessage">
       {message}
     </div>
   )
@@ -42,6 +53,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
   const [addedMessage, setAddedMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -63,7 +75,6 @@ const App = () => {
   }
 
   const handleFilterChange = (event) => {
-    <button onClick></button>
     event.preventDefault()
     console.log(event.target.value)
     setNewFilter(event.target.value)
@@ -73,7 +84,8 @@ const App = () => {
     event.preventDefault()
     const personObject = {
       name: newName,
-      number: newNumber
+      number: newNumber,
+      id: String(persons.length + 1),
     }
 
     if (persons.map(person => person.name).includes(newName)) {
@@ -104,11 +116,17 @@ const App = () => {
       .deleteItem(id)
       .then(response => {
         setPersons(persons.filter(person => person.id != id))
-        console.log("QEI43424")
         setAddedMessage(`Deleted ${persons.filter(person => person.id == id)[0].name}`)
         setTimeout(() => {
           setAddedMessage(null)
         }, 5000)
+      })
+      .catch(error => {
+        setErrorMessage(`${newObject.name} has already been removed`)
+        setTimeout(() => {
+          setAddedMessage(null)
+        }, 5000)
+        setPersons(persons.filter(person => person.id !== id))
       })
   }
 
@@ -130,12 +148,20 @@ const App = () => {
           setAddedMessage(null)
         }, 5000)
       })
+      .catch(error => {
+        setErrorMessage(`${newObject.name} not found from server`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+        setPersons(persons.filter(person => person.id !== id))
+      })
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
       <Notification message={addedMessage}></Notification>
+      <Error message={errorMessage}></Error>
       <Filter handleFilterChange={handleFilterChange} filter={filter}></Filter>
       <h2>Add new</h2>
       <PersonForm handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} newName={newName} newNumber={newNumber}></PersonForm>
