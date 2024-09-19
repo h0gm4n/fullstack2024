@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 
 const Filter = (props) =>
@@ -18,21 +18,36 @@ const PersonForm = (props) =>
 const AllPersons = (props) =>
   <div>
     {props.persons.filter(person => person.name.toLowerCase().includes(props.filter.toLowerCase()))
-      .map(person => <div key={person.name}>{person.name} {person.number}</div>)}
+      .map(person =>
+        <div key={person.name}>
+          {person.name} {person.number} <button onClick={() => props.deletePerson(person.id)} type="submit">delete</button>
+        </div>)}
   </div>
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="alertMessage">
+      {message}
+    </div>
+  )
+}
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
+  const [addedMessage, setAddedMessage] = useState(null)
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:2001/persons')
+    personService
+      .getAll()
       .then(response => {
-        console.log('promise fulfilled')
         setPersons(response.data)
       })
   }, [])
@@ -48,6 +63,7 @@ const App = () => {
   }
 
   const handleFilterChange = (event) => {
+    <button onClick></button>
     event.preventDefault()
     console.log(event.target.value)
     setNewFilter(event.target.value)
@@ -61,13 +77,19 @@ const App = () => {
     }
 
     if (persons.map(person => person.name).includes(newName)) {
-      alert(`${newName} is already added to phonebook`)
+      alert(`${newName} is already added to phonebook, replace the old number with a new one?`)
+      const person = persons.find(person => person.name === newName)
+      const changedPerson = { ...person, number: newNumber }
+      updatePerson(persons.filter(person => person.name == newName)[0].id, changedPerson)
     } else {
-      setPersons(persons.concat(personObject))
-      axios
-        .post('http://localhost:2001/persons', personObject)
+      personService
+        .create(personObject)
         .then(response => {
-          console.log(response)
+          setPersons(persons.concat(personObject))
+          setAddedMessage(`Added ${personObject.name}`)
+          setTimeout(() => {
+            setAddedMessage(null)
+          }, 5000)
         })
     }
 
@@ -75,9 +97,45 @@ const App = () => {
     setNewNumber('')
   }
 
+  const deletePerson = (id) => {
+    alert(`Remove ${persons.filter(person => person.id == id)[0].name} from phone book?`)
+    console.log(id)
+    personService
+      .deleteItem(id)
+      .then(response => {
+        setPersons(persons.filter(person => person.id != id))
+        console.log("QEI43424")
+        setAddedMessage(`Deleted ${persons.filter(person => person.id == id)[0].name}`)
+        setTimeout(() => {
+          setAddedMessage(null)
+        }, 5000)
+      })
+  }
+
+  const updatePerson = (id, newObject) => {
+    console.log(id)
+    console.log(newObject)
+    personService
+      .update(id, newObject)
+      .then(response => {
+        const updatedList = persons.map(person => {
+          if (person.id == id) {
+            return { ...person, number: newObject.number }
+          }
+          return person
+        })
+        setPersons(updatedList)
+        setAddedMessage(`Updated ${newObject.name}`)
+        setTimeout(() => {
+          setAddedMessage(null)
+        }, 5000)
+      })
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={addedMessage}></Notification>
       <Filter handleFilterChange={handleFilterChange} filter={filter}></Filter>
       <h2>Add new</h2>
       <PersonForm handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} newName={newName} newNumber={newNumber}></PersonForm>
@@ -85,7 +143,7 @@ const App = () => {
         <button onClick={addPerson} type="submit">add</button>
       </div>
       <h2>Numbers</h2>
-      <AllPersons persons={persons} filter={filter}></AllPersons>
+      <AllPersons persons={persons} filter={filter} deletePerson={deletePerson}></AllPersons>
     </div>
   )
 
