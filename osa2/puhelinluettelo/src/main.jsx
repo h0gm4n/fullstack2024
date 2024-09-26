@@ -10,4 +10,4 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
-const promise = axios.get('http://localhost:2001/')
+//const promise = axios.get('http://localhost:2001/')
