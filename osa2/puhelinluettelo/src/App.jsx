@@ -87,7 +87,7 @@ const App = () => {
       number: newNumber,
       id: String(persons.length + 1),
     }
-
+    console.log("MOI")
     if (persons.map(person => person.name).includes(newName)) {
       alert(`${newName} is already added to phonebook, replace the old number with a new one?`)
       const person = persons.find(person => person.name === newName)
@@ -101,6 +101,12 @@ const App = () => {
           setAddedMessage(`Added ${personObject.name}`)
           setTimeout(() => {
             setAddedMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setErrorMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+            setErrorMessage(null)
           }, 5000)
         })
     }
@@ -124,7 +130,7 @@ const App = () => {
       .catch(error => {
         setErrorMessage(`${newObject.name} has already been removed`)
         setTimeout(() => {
-          setAddedMessage(null)
+          setErrorMessage(null)
         }, 5000)
         setPersons(persons.filter(person => person.id !== id))
       })
