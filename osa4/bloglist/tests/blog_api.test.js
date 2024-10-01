@@ -52,6 +52,28 @@ test('blog object has id field', async () => {
         })
 })
 
+test('posting blogs work', async () => {
+    const newBlog = {
+        title: 'title4',
+        author: 'author4',
+        url: 'url4',
+        likes: 123,
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+
+    const contents = response.body.map(r => r.title)
+
+    assert.strictEqual(response.body.length, initialBlogs.length + 1)
+    assert(contents.includes('title4'))
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
