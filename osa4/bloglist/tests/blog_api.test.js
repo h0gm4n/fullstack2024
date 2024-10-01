@@ -44,6 +44,14 @@ test('correct amount of notes are returned', async () => {
     assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
+test('blog object has id field', async () => {
+    const response = await api
+        .get('/api/blogs')
+        .expect(function (res) {
+            assert(res.body[0].hasOwnProperty('id'))
+        })
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
