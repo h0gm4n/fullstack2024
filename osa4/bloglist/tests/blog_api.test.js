@@ -74,6 +74,24 @@ test('posting blogs work', async () => {
     assert(contents.includes('title4'))
 })
 
+test('posting blog without likes results in blog with 0 likes', async () => {
+    const newBlog = {
+        title: 'title4',
+        author: 'author4',
+        url: 'url4',
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    console.log(response.body[response.body.length - 1])
+    assert.strictEqual(response.body[response.body.length - 1].likes, 0)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
