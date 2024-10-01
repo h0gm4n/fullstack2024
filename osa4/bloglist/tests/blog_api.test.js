@@ -92,6 +92,29 @@ test('posting blog without likes results in blog with 0 likes', async () => {
     assert.strictEqual(response.body[response.body.length - 1].likes, 0)
 })
 
+test('posting blog without url or title field results in error', async () => {
+    let newBlog = {
+        title: 'title4',
+        author: 'author4',
+    }
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    newBlog = {
+        author: 'author4',
+        url: '432'
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
