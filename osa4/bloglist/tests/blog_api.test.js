@@ -111,9 +111,17 @@ test('posting blog without url or title field results in error', async () => {
         .post('/api/blogs')
         .send(newBlog)
         .expect(400)
-
-
 })
+
+test('deleting a blog works', async () => {
+    const response = await api.get('/api/blogs')
+    const idOfBlog = response.body[0].id
+
+    await api
+        .delete(`/api/blogs/${idOfBlog}`)
+        .expect(204)
+})
+
 
 after(async () => {
     await mongoose.connection.close()
