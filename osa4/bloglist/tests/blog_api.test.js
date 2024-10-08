@@ -88,7 +88,7 @@ test('posting blog without likes results in blog with 0 likes', async () => {
         .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
-    console.log(response.body[response.body.length - 1])
+
     assert.strictEqual(response.body[response.body.length - 1].likes, 0)
 })
 
@@ -114,12 +114,36 @@ test('posting blog without url or title field results in error', async () => {
 })
 
 test('deleting a blog works', async () => {
-    const response = await api.get('/api/blogs')
+    let response = await api.get('/api/blogs')
     const idOfBlog = response.body[0].id
 
     await api
         .delete(`/api/blogs/${idOfBlog}`)
         .expect(204)
+
+    response = await api.get('/api/blogs')
+
+    assert.notStrictEqual(response.body[0].id, idOfBlog)
+})
+
+test('updating a blog works', async () => {
+    let updatedBlog = {
+        title: 'updatedBlog',
+        author: 'updatedAuthor',
+        url: 'updatedUrl',
+        likes: 91,
+    }
+    let response = await api.get('/api/blogs')
+    const idOfBlog = response.body[0].id
+
+    await api
+        .put(`/api/blogs/${idOfBlog}`)
+        .send(updatedBlog)
+        .expect(200)
+
+    response = await api.get('/api/blogs')
+
+    assert.strictEqual(response.body[0].likes, 91)
 })
 
 
