@@ -4,6 +4,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const assert = require('node:assert')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -13,18 +14,21 @@ const initialBlogs = [
         author: 'author1',
         url: 'url1',
         likes: 37,
+        userId: '1343423242'
     },
     {
         title: 'title2',
         author: 'author2',
         url: 'url2',
         likes: 46,
+        userId: '1343423245'
     },
     {
         title: 'title3',
         author: 'author3',
         url: 'url3',
         likes: 33,
+        userId: '1343423241'
     },
 ]
 
@@ -36,6 +40,13 @@ beforeEach(async () => {
     await blogObject.save()
     blogObject = new Blog(initialBlogs[2])
     await blogObject.save()
+    await User.deleteMany({})
+    userObject = new User({
+        username: "atte",
+        name: "atte",
+        password: "moikka"
+    })
+    await userObject.save()
 })
 
 test('correct amount of notes are returned', async () => {
@@ -53,12 +64,19 @@ test('blog object has id field', async () => {
 })
 
 test('posting blogs work', async () => {
+    const response1 = await api.get('/api/users')
+    console.log(response1.body[0].id)
+
+
     const newBlog = {
         title: 'title4',
         author: 'author4',
         url: 'url4',
         likes: 123,
+        _id: response1.body[0].id
     }
+
+    console.log(newBlog._id)
 
     await api
         .post('/api/blogs')
@@ -75,11 +93,17 @@ test('posting blogs work', async () => {
 })
 
 test('posting blog without likes results in blog with 0 likes', async () => {
+    const response1 = await api.get('/api/users')
+    console.log(response1.body[0])
+
     const newBlog = {
         title: 'title4',
         author: 'author4',
         url: 'url4',
+        _id: response1.body[0].id
     }
+
+    console.log(newBlog._id)
 
     await api
         .post('/api/blogs')
@@ -146,6 +170,26 @@ test('updating a blog works', async () => {
     assert.strictEqual(response.body[0].likes, 91)
 })
 
+test('username or password with <3 characters not allowed', async () => {
+    let newUser = {
+        username: 'at',
+        name: 'atte',
+        password: 'moi'
+    }
+    await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(401)
+    newUser = {
+        username: 'atte',
+        name: 'atte',
+        password: 'mo'
+    }
+    await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(401)
+})
 
 after(async () => {
     await mongoose.connection.close()
