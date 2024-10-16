@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RpbWllczIiLCJpZCI6IjY3MGY4YmQ2OGE3OWI4NDc2ZWQ5MDdhMSIsImlhdCI6MTcyOTA3MjE5OX0.Wq22c9iCFAyydwpZSuqAGPa8SHB5vQL_6LFzMA280fE
+
+{  
+    "title": "Blogi 1",
+    "author": "Bloggaaja 1",
+    "url": "www.blogit.com/blogit/1",
+    "likes": 20
+}
