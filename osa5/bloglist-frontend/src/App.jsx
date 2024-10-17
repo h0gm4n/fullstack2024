@@ -4,7 +4,6 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import CreateNew from './components/CreateNew'
-import BlogWithInfo from './components/BlogWithInfo'
 import './index.css'
 
 
@@ -25,10 +24,6 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
-  }, [])
-
-  useEffect(() => {
-    blogs.map(blog => blog.view = false)
   }, [])
 
   useEffect(() => {
@@ -126,6 +121,29 @@ const App = () => {
     }))
   }
 
+  const handleBlogLike = (blog) => {
+    console.log("id:", blog.id)
+    let updatedBlog = {
+      user: blog.user,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url
+    }
+    updatedBlog.id = blog.id
+    updatedBlog.user = blog.user
+    blogService.update(blog.id, updatedBlog)
+    const updatedBlogs = blogs.map(obj => {
+      if (obj.id === blog.id) {
+        return updatedBlog
+      } else {
+        return obj
+      }
+    })
+    setBlogs(updatedBlogs)
+    console.log(viewedBlogs)
+  }
+
   const singularBlogView = (event) => {
     return (
       <div>
@@ -136,7 +154,9 @@ const App = () => {
                 key={blog.id}
                 blog={blog}
                 isViewed={viewedBlogs[blog.id]}
-                onView={() => handleViewToggle(blog.id)} />
+                onView={() => handleViewToggle(blog.id)}
+                likeBlog={() => handleBlogLike(blog)}
+              />
             </div>)}
         </div>
       </div>
