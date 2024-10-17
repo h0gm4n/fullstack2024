@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import CreateNew from './components/CreateNew'
+import BlogWithInfo from './components/BlogWithInfo'
 import './index.css'
 
 
@@ -18,11 +19,16 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
   const [blogFormVisible, setBlogFormVisible] = useState(false)
+  const [viewedBlogs, setViewedBlogs] = useState({})
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
+  }, [])
+
+  useEffect(() => {
+    blogs.map(blog => blog.view = false)
   }, [])
 
   useEffect(() => {
@@ -113,6 +119,30 @@ const App = () => {
     )
   }
 
+  const handleViewToggle = (id) => {
+    setViewedBlogs(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }))
+  }
+
+  const singularBlogView = (event) => {
+    return (
+      <div>
+        <div>
+          {blogs.map(blog =>
+            <div>
+              <Blog
+                key={blog.id}
+                blog={blog}
+                isViewed={viewedBlogs[blog.id]}
+                onView={() => handleViewToggle(blog.id)} />
+            </div>)}
+        </div>
+      </div>
+    )
+  }
+
   if (user !== null) {
     return (
       <div>
@@ -122,10 +152,7 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
         {newBlogForm()}
         <h2>blogs</h2>
-        {
-          blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
+        {singularBlogView()}
       </div>
     )
   } else {
