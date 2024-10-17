@@ -67,12 +67,18 @@ const App = () => {
     let newBlog = {
       title: title,
       author: author,
-      url: url
+      url: url,
+      user: {
+        name: user.name
+      }
     }
-    blogService.create(newBlog)
+    await blogService.create(newBlog)
     setTitle('')
     setAuthor('')
     setUrl('')
+    blogs.user = {
+      name: user.username
+    }
     setBlogs(blogs.concat(newBlog))
     setSuccessMessage(`a new blog ${title} by ${author} added`)
     setTimeout(() => {
@@ -121,7 +127,7 @@ const App = () => {
     }))
   }
 
-  const handleBlogLike = (blog) => {
+  const handleBlogLike = async (blog) => {
     console.log("id:", blog.id)
     let updatedBlog = {
       user: blog.user,
@@ -144,6 +150,11 @@ const App = () => {
     console.log(viewedBlogs)
   }
 
+  const deleteBlog = (id) => {
+    blogService.removeBlog(id)
+    setBlogs(blogs.filter(b => b.id !== id))
+  }
+
   const singularBlogView = (event) => {
     return (
       <div>
@@ -156,6 +167,8 @@ const App = () => {
                 isViewed={viewedBlogs[blog.id]}
                 onView={() => handleViewToggle(blog.id)}
                 likeBlog={() => handleBlogLike(blog)}
+                deleteBlog={() => deleteBlog(blog.id)}
+                username={user.username}
               />
             </div>)}
         </div>
