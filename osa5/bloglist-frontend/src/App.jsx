@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import LoginForm from './components/LoginForm'
 import './index.css'
 
 const CreateNew = ({ title, author, url, setTitle, setAuthor, setUrl, addNewBlog }) => {
@@ -37,6 +38,7 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -96,12 +98,40 @@ const App = () => {
     setTimeout(() => {
       setSuccessMessage(null)
     }, 5000)
+    setBlogFormVisible(false)
   }
 
   const handleLogout = async (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+  }
+
+  const handleUsernameChange = (event) => {
+    event.preventDefault()
+    setUsername(event.target.value)
+  }
+
+  const handlePasswordChange = (event) => {
+    event.preventDefault()
+    setPassword(event.target.value)
+  }
+
+  const newBlogForm = () => {
+    const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
+    const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setBlogFormVisible(true)}>create</button>
+        </div>
+        <div style={showWhenVisible}>
+          <CreateNew title={title} author={author} url={url} setTitle={setTitle} setAuthor={setAuthor} setUrl={setUrl} addNewBlog={addNewBlog} ></CreateNew>
+          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
   }
 
   if (user !== null) {
@@ -111,7 +141,7 @@ const App = () => {
         <div className='error'>{errorMessage}</div>
         Logged in as <b>{user.username}</b>
         <button onClick={handleLogout}>logout</button>
-        <CreateNew title={title} author={author} url={url} setTitle={setTitle} setAuthor={setAuthor} setUrl={setUrl} addNewBlog={addNewBlog} ></CreateNew>
+        {newBlogForm()}
         <h2>blogs</h2>
         {
           blogs.map(blog =>
@@ -122,19 +152,7 @@ const App = () => {
   } else {
     return (
       <div>
-        <h2>Login</h2>
-        <form onSubmit={handleLogin}>
-          <div className='error'>{errorMessage}</div>
-          <div>
-            username
-            <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}></input>
-          </div>
-          <div>
-            password
-            <input type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)}></input>
-          </div>
-          <button type="submit">login</button>
-        </form>
+        <LoginForm handleLogin={handleLogin} handleUsernameChange={handleUsernameChange} handlePasswordChange={handlePasswordChange} username={username} password={password}></LoginForm>
       </div>
     )
   }
