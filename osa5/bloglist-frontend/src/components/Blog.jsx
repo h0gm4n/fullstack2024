@@ -19,7 +19,7 @@ const Blog = ({ blog, onView, isViewed, likeBlog, deleteBlog, username }) => (
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   onView: PropTypes.func.isRequired,
-  isViewed: PropTypes.func.isRequired,
+  isViewed: PropTypes.bool.isRequired,
   likeBlog: PropTypes.func.isRequired,
   deleteBlog: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired
