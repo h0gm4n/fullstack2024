@@ -20,4 +20,13 @@ describe('Blog app', () => {
     await expect(page.getByText('username')).toBeVisible()
     await expect(page.getByText('password')).toBeVisible()
   })
+
+  test('login fails with wrong password', async ({ page }) => {
+
+    await page.getByTestId('username').fill('hogmatte')
+    await page.getByTestId('password').fill('wrong')
+    await page.getByRole('button', { name: 'login' }).click()
+
+    await expect(page.getByText('wrong credentials')).toBeVisible()
+  })
 })
