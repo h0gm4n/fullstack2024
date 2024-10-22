@@ -15,11 +15,18 @@ export const useField = (type) => {
     }
   }
 
+  const reset = () => {
+    setContent('')
+    setAuthor('')
+    setInfo('')
+  }
+
   return {
     type,
     content,
     author,
     info,
-    onChange
+    onChange,
+    reset
   }
 }
