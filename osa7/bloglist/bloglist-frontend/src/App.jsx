@@ -151,16 +151,7 @@ const App = () => {
   const BlogView = () => {
     return (
       <div>
-        <h1 className='blogTitle'>Blogs</h1>
-        <NewBlogForm blogFormVisible={blogFormVisible}
-          setBlogFormVisible={setBlogFormVisible}
-          title={title}
-          author={author}
-          url={url}
-          setTitle={setTitle}
-          setAuthor={setAuthor}
-          setUrl={setUrl}
-          addNewBlog={addNewBlog} />
+        <h2>blogs</h2>
         <div>
           {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
             <div key={blog.id} className='blogBorder'>
