@@ -52,13 +52,10 @@ const App = () => {
       const user = await loginService.login({
         username, password
       })
-      console.log('MOI')
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
-      console.log('MOI2')
       blogService.setToken(user.token)
-      console.log('MOI3')
       setUser(user)
       setUsername('')
       setPassword('')
@@ -159,15 +156,11 @@ const App = () => {
     console.log(viewedBlogs)
   }
 
-  const deleteBlog = (id) => {
-    blogService.removeBlog(id)
-    setBlogs(blogs.filter(b => b.id !== id))
-  }
-
   const BlogView = () => {
     return (
       <div>
         <h2>blogs</h2>
+        {newBlogForm()}
         <div>
           {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
             <div key={blog.id}>
@@ -219,13 +212,20 @@ const App = () => {
           <h3>Users</h3>
           <div>
             <table>
-              <th></th>
-              <th>blog posts</th>
-              {usersBlogAmounts.map(blog =>
+              <thead>
                 <tr>
-                  <td><Link to={`/users/${blog[2]}`}>{blog[0]}</Link></td>
-                  <td>{blog[1]}</td>
-                </tr>)}
+                  <th></th>
+                  <th>blog posts</th>
+                </tr>
+              </thead>
+              <tbody>
+                {usersBlogAmounts.map(blog => (
+                  <tr key={blog[2]}>
+                    <td><Link to={`/users/${blog[2]}`}>{blog[0]}</Link></td>
+                    <td>{blog[1]}</td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         </div>
@@ -251,15 +251,28 @@ const App = () => {
     }
   }
 
+  const Menu = () => {
+    const padding = {
+      paddingRight: 5
+    }
+    return (
+      <div>
+        <a href='/' style={padding}>blogs</a>
+        <a href='/users' style={padding}>users</a>
+        Logged in as <b>{user.username}</b>
+        <button onClick={handleLogout}>logout</button>
+      </div>
+    )
+  }
+
   if (user !== null) {
     return (
       <div>
-        <div className='success'>{successMessage}</div>
-        <div className='error'>{errorMessage}</div>
-        Logged in as <b>{user.username}</b>
-        <button onClick={handleLogout}>logout</button>
-        {newBlogForm()}
+
         <Router>
+          <Menu />
+          <div className='success'>{successMessage}</div>
+          <div className='error'>{errorMessage}</div>
           <Routes>
             <Route path="/" element={<BlogView />} />
             <Route path="/users" element={<Users />} />
