@@ -5,3 +5,38 @@
 .success {
     color: green
 }
+
+.blogTitle {
+    font-family: Arial, Helvetica, sans-serif;
+    color: lightseagreen;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+.createButton {
+    font-size: 20px;
+    background-color: green;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.blogBorder {
+    border-style: outset;
+    border-width: 1
+}
+
+.createNew {
+    text-decoration-line: underline;
+}
+
+.cancelNew {
+    font-size: 15px;
+    background-color: grey;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 5px;
+    margin-bottom: 10px;
+}

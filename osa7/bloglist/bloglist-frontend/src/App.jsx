@@ -24,7 +24,6 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
   const [blogFormVisible, setBlogFormVisible] = useState(false)
-  const [viewedBlogs, setViewedBlogs] = useState({})
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -109,28 +108,21 @@ const App = () => {
     setPassword(event.target.value)
   }
 
-  const newBlogForm = () => {
+  const NewBlogForm = ({ blogFormVisible, setBlogFormVisible, title, author, url, setTitle, setAuthor, setUrl, addNewBlog }) => {
     const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
     const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button onClick={() => setBlogFormVisible(true)}>create</button>
+          <button className="createButton" onClick={() => setBlogFormVisible(true)}>Create</button>
         </div>
         <div style={showWhenVisible}>
           <CreateNew title={title} author={author} url={url} setTitle={setTitle} setAuthor={setAuthor} setUrl={setUrl} addNewBlog={addNewBlog} ></CreateNew>
-          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+          <button className='cancelNew' onClick={() => setBlogFormVisible(false)}>cancel</button>
         </div>
       </div>
     )
-  }
-
-  const handleViewToggle = (id) => {
-    setViewedBlogs(prevState => ({
-      ...prevState,
-      [id]: !prevState[id]
-    }))
   }
 
   const handleBlogLike = async (blog) => {
@@ -159,11 +151,19 @@ const App = () => {
   const BlogView = () => {
     return (
       <div>
-        <h2>blogs</h2>
-        {newBlogForm()}
+        <h1 className='blogTitle'>Blogs</h1>
+        <NewBlogForm blogFormVisible={blogFormVisible}
+          setBlogFormVisible={setBlogFormVisible}
+          title={title}
+          author={author}
+          url={url}
+          setTitle={setTitle}
+          setAuthor={setAuthor}
+          setUrl={setUrl}
+          addNewBlog={addNewBlog} />
         <div>
           {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-            <div key={blog.id}>
+            <div key={blog.id} className='blogBorder'>
               <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
             </div>)}
         </div>
@@ -209,7 +209,7 @@ const App = () => {
       console.log(usersBlogAmounts)
       return (
         <div>
-          <h3>Users</h3>
+          <h2 className='blogTitle'>Users</h2>
           <div>
             <table>
               <thead>
@@ -243,7 +243,7 @@ const App = () => {
           <Blog
             key={blogById.id}
             blog={blogById}
-            url={<Link to={blogById.url}>url</Link>}
+            url={<Link to={blogById.url}>{blogById.url}</Link>}
             likeBlog={() => handleBlogLike(blogById)}
           />
         </div>
