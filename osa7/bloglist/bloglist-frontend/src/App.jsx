@@ -171,15 +171,7 @@ const App = () => {
         <div>
           {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
             <div key={blog.id}>
-              <Blog
-                key={blog.id}
-                blog={blog}
-                isViewed={viewedBlogs[blog.id]}
-                onView={() => handleViewToggle(blog.id)}
-                likeBlog={() => handleBlogLike(blog)}
-                deleteBlog={() => deleteBlog(blog.id)}
-                username={user.username}
-              />
+              <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
             </div>)}
         </div>
       </div>
@@ -241,6 +233,24 @@ const App = () => {
     }
   }
 
+  const SingularBlog = () => {
+    const id = useParams().id
+    if (blogs.length > 0) {
+      const blogById = blogs.find(blog => blog.id === id)
+      console.log(blogById)
+      return (
+        <div>
+          <Blog
+            key={blogById.id}
+            blog={blogById}
+            url={<Link to={blogById.url}>url</Link>}
+            likeBlog={() => handleBlogLike(blogById)}
+          />
+        </div>
+      )
+    }
+  }
+
   if (user !== null) {
     return (
       <div>
@@ -254,6 +264,7 @@ const App = () => {
             <Route path="/" element={<BlogView />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/:id" element={<BlogsAddedByUser />} />
+            <Route path="/blogs/:id" element={<SingularBlog />} />
           </Routes>
         </Router>
       </div>
