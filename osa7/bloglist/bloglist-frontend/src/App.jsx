@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
 import LoginForm from './components/LoginForm'
 import CreateNew from './components/CreateNew'
 import './index.css'
@@ -13,6 +14,7 @@ import {
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [users, setUsers] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -27,6 +29,9 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
+    )
+    userService.getAll().then(users =>
+      setUsers(users)
     )
   }, [])
 
@@ -181,15 +186,34 @@ const App = () => {
     )
   }
 
+  const BlogsAddedByUser = () => {
+    const id = useParams().id
+    if (users.length > 0) {
+      const userById = users.find(user => user.id === id)
+      let userBlogArray = Object.values(userById.blogs)
+      return (
+        <div>
+          <h2>{userById.name}</h2>
+          <h3>added blogs</h3>
+          <ul>
+            {userBlogArray.map(blog => <li key={blog.id}>{blog.title}</li>)}
+          </ul>
+        </div>
+      )
+    }
+  }
+
   const countUsers = () => {
     let counter = {}
     if (blogs.length > 0) {
-      const users = blogs.map(blog => blog.user.name)
-      users.map(x => counter[x] = 1 + (counter[x] || 0))
+      const moi = blogs.map(blog => blog.user.name)
+      moi.map(user => [counter[user] = 1 + (counter[user] || 0)])
     }
+    console.log(counter)
     let counterArray = []
     for (let i = 0; i < Object.keys(counter).length; i++) {
-      counterArray.push([Object.keys(counter)[i], Object.values(counter)[i]])
+      const userById = users.find(user => user.name === Object.keys(counter)[i])
+      counterArray.push([Object.keys(counter)[i], Object.values(counter)[i], userById.id])
     }
     return counterArray
   }
@@ -207,7 +231,7 @@ const App = () => {
               <th>blog posts</th>
               {usersBlogAmounts.map(blog =>
                 <tr>
-                  <td>{blog[0]}</td>
+                  <td><Link to={`/users/${blog[2]}`}>{blog[0]}</Link></td>
                   <td>{blog[1]}</td>
                 </tr>)}
             </table>
@@ -229,6 +253,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<BlogView />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<BlogsAddedByUser />} />
           </Routes>
         </Router>
       </div>
